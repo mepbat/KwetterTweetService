@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@RestController
+@RequestMapping(value = "/tag")
 public class TagController {
     private final TagRepository tagRepository;
 
