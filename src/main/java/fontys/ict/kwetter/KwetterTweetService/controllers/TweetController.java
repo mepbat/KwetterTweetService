@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:4200","http://localhost:8081","http://localhost:8082","http://localhost:8083"})
 @RequestMapping(value = "/tweet")
 public class TweetController {
     private final TweetRepository tweetRepository;
