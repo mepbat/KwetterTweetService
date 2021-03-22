@@ -2,6 +2,8 @@ package fontys.ict.kwetter.KwetterTweetService.controllers;
 
 import fontys.ict.kwetter.KwetterTweetService.models.Tweet;
 import fontys.ict.kwetter.KwetterTweetService.repositories.TweetRepository;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -13,9 +15,16 @@ import java.util.Optional;
 @RequestMapping(value = "/tweet")
 public class TweetController {
     private final TweetRepository tweetRepository;
+    private final AmqpTemplate rabbitTemplate;
 
-    public TweetController(TweetRepository tweetRepository) {
+    @Value("${rabbitmq.exchange}")
+    private String exchange;
+    @Value("${rabbitmq.routingKey}")
+    private String routingkey;
+
+    public TweetController(TweetRepository tweetRepository, AmqpTemplate rabbitTemplate) {
         this.tweetRepository = tweetRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @RequestMapping(value = "/{tweetId}", method = RequestMethod.GET)

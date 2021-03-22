@@ -2,6 +2,8 @@ package fontys.ict.kwetter.KwetterTweetService.controllers;
 
 import fontys.ict.kwetter.KwetterTweetService.models.Tag;
 import fontys.ict.kwetter.KwetterTweetService.repositories.TagRepository;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,9 +14,16 @@ import java.util.Optional;
 @RequestMapping(value = "/tag")
 public class TagController {
     private final TagRepository tagRepository;
+    private final AmqpTemplate rabbitTemplate;
 
-    public TagController(TagRepository tagRepository) {
+    @Value("${rabbitmq.exchange}")
+    private String exchange;
+    @Value("${rabbitmq.routingKey}")
+    private String routingkey;
+
+    public TagController(TagRepository tagRepository, AmqpTemplate rabbitTemplate) {
         this.tagRepository = tagRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @RequestMapping(value = "/{tagId}", method = RequestMethod.GET)

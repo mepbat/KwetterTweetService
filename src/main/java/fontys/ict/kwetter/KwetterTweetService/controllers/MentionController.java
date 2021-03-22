@@ -2,6 +2,8 @@ package fontys.ict.kwetter.KwetterTweetService.controllers;
 
 import fontys.ict.kwetter.KwetterTweetService.models.Mention;
 import fontys.ict.kwetter.KwetterTweetService.repositories.MentionRepository;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,9 +14,16 @@ import java.util.Optional;
 @RequestMapping(value = "/mention")
 public class MentionController {
     private final MentionRepository mentionRepository;
+    private final AmqpTemplate rabbitTemplate;
 
-    public MentionController(MentionRepository mentionRepository) {
+    @Value("${rabbitmq.exchange}")
+    private String exchange;
+    @Value("${rabbitmq.routingKey}")
+    private String routingkey;
+
+    public MentionController(MentionRepository mentionRepository, AmqpTemplate rabbitTemplate) {
         this.mentionRepository = mentionRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @RequestMapping(value = "/{mentionId}", method = RequestMethod.GET)
