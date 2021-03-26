@@ -1,7 +1,7 @@
 package fontys.ict.kwetter.KwetterTweetService.models;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -11,9 +11,9 @@ public class Tweet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
-    private String tweet;
+    private String text;
     @Column
-    private Timestamp timestamp;
+    private Date date;
     @Column(name = "account_id",nullable = false)
     private Long accountId;
     @OneToMany(mappedBy = "tweet")
@@ -25,10 +25,10 @@ public class Tweet {
     public Tweet() {
     }
 
-    public Tweet(Long id, String tweet, Timestamp timestamp, Long accountId, List<Mention> mentions, List<Tag> tags) {
+    public Tweet(Long id, String text, Date date, Long accountId, List<Mention> mentions, List<Tag> tags) {
         this.id = id;
-        this.tweet = tweet;
-        this.timestamp = timestamp;
+        this.text = text;
+        this.date = date;
         this.accountId = accountId;
         this.mentions = mentions;
         this.tags = tags;
@@ -42,20 +42,20 @@ public class Tweet {
         this.id = id;
     }
 
-    public String getTweet() {
-        return tweet;
+    public String getText() {
+        return text;
     }
 
-    public void setTweet(String tweet) {
-        this.tweet = tweet;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public Date getDate() {
+        return date;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Long getAccountId() {

@@ -1,3 +1,4 @@
+/*
 package fontys.ict.kwetter.KwetterTweetService.messaging;
 
 import org.springframework.amqp.core.*;
@@ -46,3 +47,4 @@ public class MessageBrokerConfiguration {
         return rabbitTemplate;
     }
 }
+*/
