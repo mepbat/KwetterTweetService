@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface TweetRepository extends JpaRepository<Tweet,Long> {
-    List<Tweet> getTweetsByAccountIdInOrderByDateDesc(Collection<Long> accountIds);
+    List<Tweet> findTweetsByAccountIdInOrderByDateDesc(Collection<Long> accountIds);
     List<Tweet> findTop10ByOrderByDateDesc();
+    List<Tweet> findTop10ByUsernameOrderByDateDesc(String username);
 }

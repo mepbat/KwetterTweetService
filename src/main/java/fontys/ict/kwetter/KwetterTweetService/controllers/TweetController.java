@@ -1,7 +1,5 @@
 package fontys.ict.kwetter.KwetterTweetService.controllers;
 
-import fontys.ict.kwetter.KwetterTweetService.models.Mention;
-import fontys.ict.kwetter.KwetterTweetService.models.Tag;
 import fontys.ict.kwetter.KwetterTweetService.models.Tweet;
 import fontys.ict.kwetter.KwetterTweetService.models.dto.TweetDto;
 import fontys.ict.kwetter.KwetterTweetService.repositories.TweetRepository;
@@ -11,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200","http://localhost:8081","http://localhost:8082","http://localhost:8083"})
 @RequestMapping(value = "/tweet")
 public class TweetController {
     private final TweetRepository tweetRepository;
@@ -44,7 +40,12 @@ public class TweetController {
     @RequestMapping(value = "/{accountIds}", method = RequestMethod.GET)
     public @ResponseBody
     List<Tweet> getTimeline(@PathVariable("accountIds") Collection<Long> accountIds) {
-        return tweetRepository.getTweetsByAccountIdInOrderByDateDesc(accountIds).subList(0,10); //Get the 10 most recent tweets from user and its follows
+        return tweetRepository.findTweetsByAccountIdInOrderByDateDesc(accountIds).subList(0,10); //Get the 10 most recent tweets from user and its follows
+    }
+
+    @RequestMapping(value = "/getMostRecentTweetsByUsername/{username}")
+    List<Tweet> getMostRecentTweetsByUsername(@PathVariable String username){
+        return tweetRepository.findTop10ByUsernameOrderByDateDesc(username);
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -70,6 +71,7 @@ public class TweetController {
         tweet.setAccountId(tweetDto.getId());
         tweet.setDate(tweetDto.getDate());
         tweet.setText(tweetDto.getText());
+        tweet.setUsername(tweetDto.getUsername());
         return new ResponseEntity<>(tweetRepository.save(tweet), HttpStatus.CREATED);
     }
 

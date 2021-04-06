@@ -16,6 +16,8 @@ public class Tweet {
     private Date date;
     @Column(name = "account_id",nullable = false)
     private Long accountId;
+    @Column
+    private String username;
     @OneToMany(mappedBy = "tweet")
     private List<Mention> mentions;
 
@@ -25,11 +27,12 @@ public class Tweet {
     public Tweet() {
     }
 
-    public Tweet(Long id, String text, Date date, Long accountId, List<Mention> mentions, List<Tag> tags) {
+    public Tweet(Long id, String text, Date date, Long accountId, String username, List<Mention> mentions, List<Tag> tags) {
         this.id = id;
         this.text = text;
         this.date = date;
         this.accountId = accountId;
+        this.username = username;
         this.mentions = mentions;
         this.tags = tags;
     }
@@ -80,5 +83,13 @@ public class Tweet {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

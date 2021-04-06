@@ -6,14 +6,16 @@ public class TweetDto {
     private Long id;
     private String text;
     private Date date;
+    private String username;
 
     public TweetDto() {
     }
 
-    public TweetDto(Long id, String text, Date date) {
+    public TweetDto(Long id, String text, Date date, String username) {
         this.id = id;
         this.text = text;
         this.date = date;
+        this.username = username;
     }
 
     public Long getId() {
@@ -38,5 +40,13 @@ public class TweetDto {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
