@@ -48,6 +48,15 @@ public class TweetController {
         return tweetRepository.findTop10ByUsernameOrderByDateDesc(username);
     }
 
+    @RequestMapping(value = "/getLastTweet/{username}", method = RequestMethod.GET)
+    public ResponseEntity<?> getLastTweet(@PathVariable("username") String username) {
+        Optional<Tweet> tweet = tweetRepository.findFirstByUsernameOrderByDateDesc(username);
+        if(tweet.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(tweet.get(), HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody
     List<Tweet> getAll() {
