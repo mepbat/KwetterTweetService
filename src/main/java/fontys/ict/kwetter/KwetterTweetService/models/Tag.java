@@ -12,7 +12,7 @@ public class Tag {
     private String tag;
 
     @ManyToOne
-    @JoinColumn(name = "tweet_id")
+    @JoinColumn(name = "tweet_id", nullable = false)
     private Tweet tweet;
 
     public Tag() {
@@ -36,5 +36,14 @@ public class Tag {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", tag='" + tag + '\'' +
+                ", tweet=" + tweet.getId() +
+                '}';
     }
 }

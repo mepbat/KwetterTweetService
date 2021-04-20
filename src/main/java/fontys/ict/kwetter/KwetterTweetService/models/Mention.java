@@ -10,19 +10,19 @@ public class Mention {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "tweet_id")
+    @JoinColumn(name = "tweet_id", nullable = false)
     private Tweet tweet;
 
-    @Column(unique = false, name ="account_id")
-    private Long accountId;
+    @Column
+    private String username;
 
     public Mention() {
     }
 
-    public Mention(Long id, Tweet tweet, Long accountId) {
+    public Mention(Long id, Tweet tweet, String username) {
         this.id = id;
         this.tweet = tweet;
-        this.accountId = accountId;
+        this.username = username;
     }
 
     public Long getId() {
@@ -41,11 +41,20 @@ public class Mention {
         this.tweet = tweet;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public String toString() {
+        return "Mention{" +
+                "id=" + id +
+                ", tweet=" + tweet.getId() +
+                ", username='" + username + '\'' +
+                '}';
     }
 }

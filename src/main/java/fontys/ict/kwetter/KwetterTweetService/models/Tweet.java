@@ -18,10 +18,10 @@ public class Tweet {
     private Long accountId;
     @Column
     private String username;
-    @OneToMany(mappedBy = "tweet")
+    @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL)
     private List<Mention> mentions;
 
-    @OneToMany(mappedBy = "tweet")
+    @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL)
     private List<Tag> tags;
 
     public Tweet() {
@@ -91,5 +91,18 @@ public class Tweet {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public String toString() {
+        return "Tweet{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", date=" + date +
+                ", accountId=" + accountId +
+                ", username='" + username + '\'' +
+                ", mentions=" + mentions.size() +
+                ", tags=" + tags.size() +
+                '}';
     }
 }
