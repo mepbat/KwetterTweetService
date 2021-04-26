@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TagRepository extends JpaRepository<Tag,Long> {
     @Query(value = "SELECT TOP(10) tag.tag\n" +
@@ -15,4 +16,8 @@ public interface TagRepository extends JpaRepository<Tag,Long> {
             "ORDER BY COUNT(tag.tag) DESC",
     nativeQuery = true)
     List<String> getTrends();
+
+    List<Tag> findAllByTagContaining(String tag);
+
+    Optional<Tag> findByTag(String tag);
 }

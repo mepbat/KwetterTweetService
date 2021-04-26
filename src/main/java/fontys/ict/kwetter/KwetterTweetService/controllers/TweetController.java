@@ -67,6 +67,15 @@ public class TweetController {
         return new ResponseEntity<>(gson.toJson(tweets), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/getByTag/{tag}", method = RequestMethod.GET)
+    public ResponseEntity<?> getTweetsByTag(@PathVariable("tag") String tag) {
+        Optional<Tag> optionalTag = tagRepository.findByTag(tag);
+        if(optionalTag.isEmpty()){
+            return new ResponseEntity<>("No Tweets found", HttpStatus.OK);
+        }
+        return new ResponseEntity<>(gson.toJson(tweetRepository.findAllByTags(optionalTag.get())), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/getMostRecentTweetsByUsername/{username}")
     public ResponseEntity<?> getMostRecentTweetsByUsername(@PathVariable String username) {
         return new ResponseEntity<>(gson.toJson(tweetRepository.findTop10ByUsernameOrderByDateDesc(username)), HttpStatus.OK);

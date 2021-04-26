@@ -37,12 +37,6 @@ public class TagController {
         this.gson = initiateGson();
     }
 
-    @RequestMapping(value = "/{tagId}", method = RequestMethod.GET)
-    public @ResponseBody
-    Optional<Tag> getTag(@PathVariable("tagId") Long tagId) {
-        return tagRepository.findById(tagId);
-    }
-
     @RequestMapping(value = "/trends", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getTrends(){
         List<String> trends = tagRepository.getTrends();
@@ -53,6 +47,11 @@ public class TagController {
             tags.add(tag);
         }
         return new ResponseEntity<>(gson.toJson(tags), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/search/{tag}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<?> searchTags(@PathVariable String tag){
+        return new ResponseEntity<>(gson.toJson(tagRepository.findAllByTagContaining(tag)), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET)
