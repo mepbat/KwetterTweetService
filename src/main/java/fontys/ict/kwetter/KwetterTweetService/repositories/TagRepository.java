@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface TagRepository extends JpaRepository<Tag,Long> {
     @Query(value = "SELECT TOP(10) tag.tag\n" +
-            "FROM dbo.tag_tweets\n" +
-            "INNER JOIN dbo.tag ON tag_tweets.tag_id = tag.id\n" +
-            "INNER JOIN dbo.tweet ON tag_tweets.tweets_id = tweet.id\n" +
+            "FROM dbo.tweet_tag\n" +
+            "INNER JOIN dbo.tag ON tweet_tag.tag_id = tag.id\n" +
+            "INNER JOIN dbo.tweet ON tweet_tag.tweet_id = tweet.id\n" +
             "WHERE tweet.date > DATEADD(HH, -24, GETDATE())\n" +
             "GROUP BY tag.tag\n" +
             "ORDER BY COUNT(tag.tag) DESC",

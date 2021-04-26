@@ -1,25 +1,26 @@
 package fontys.ict.kwetter.KwetterTweetService.models;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-@Entity
+@Entity(name = "Tag")
 @Table(name = "Tag")
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String tag;
 
-    @ManyToMany
-    @JoinColumn(nullable = false)
-    private List<Tweet> tweets;
+    @ManyToMany(mappedBy = "tags")
+    private Set<Tweet> tweets = new HashSet<>();
 
     public Tag() {
     }
 
-    public Tag(Long id, String tag, List<Tweet> tweets) {
+    public Tag(Long id, String tag, Set<Tweet> tweets) {
         this.id = id;
         this.tag = tag;
         this.tweets = tweets;
@@ -33,11 +34,11 @@ public class Tag {
         this.id = id;
     }
 
-    public List<Tweet> getTweets() {
+    public Set<Tweet> getTweets() {
         return tweets;
     }
 
-    public void setTweets(List<Tweet> tweets) {
+    public void setTweets(Set<Tweet> tweets) {
         this.tweets = tweets;
     }
 

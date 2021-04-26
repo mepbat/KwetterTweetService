@@ -2,9 +2,11 @@ package fontys.ict.kwetter.KwetterTweetService.models;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-@Entity
+@Entity(name = "Tweet")
 @Table(name = "Tweet")
 public class Tweet {
     @Id
@@ -18,16 +20,30 @@ public class Tweet {
     private Long accountId;
     @Column
     private String username;
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Mention> mentions;
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "tweet_mention",
+            joinColumns = @JoinColumn(name = "tweet_id"),
+            inverseJoinColumns = @JoinColumn(name = "mention_id")
+    )
+    private Set<Mention> mentions = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Tag> tags;
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "tweet_tag",
+            joinColumns = @JoinColumn(name = "tweet_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags= new HashSet<>();
 
     public Tweet() {
     }
 
-    public Tweet(Long id, String text, Date date, Long accountId, String username, List<Mention> mentions, List<Tag> tags) {
+    public Tweet(Long id, String text, Date date, Long accountId, String username, Set<Mention> mentions, Set<Tag> tags) {
         this.id = id;
         this.text = text;
         this.date = date;
@@ -69,19 +85,19 @@ public class Tweet {
         this.accountId = accountId;
     }
 
-    public List<Mention> getMentions() {
+    public Set<Mention> getMentions() {
         return mentions;
     }
 
-    public void setMentions(List<Mention> mentions) {
+    public void setMentions(Set<Mention> mentions) {
         this.mentions = mentions;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
