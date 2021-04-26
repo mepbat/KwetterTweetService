@@ -18,10 +18,10 @@ public class Tweet {
     private Long accountId;
     @Column
     private String username;
-    @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Mention> mentions;
 
-    @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Tag> tags;
 
     public Tweet() {

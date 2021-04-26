@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/mention")
@@ -49,15 +50,11 @@ public class MentionController {
         if(username == null || username.isEmpty()){
             return new ResponseEntity<>("Username is empty!", HttpStatus.BAD_REQUEST);
         }
-        List<Mention> mentions = mentionRepository.findByUsername(username);
-        if(mentions.isEmpty()){
-            return new ResponseEntity<>("No mentions found!", HttpStatus.NOT_FOUND);
+        Optional<Mention> optionalMention = mentionRepository.findByUsername(username);
+        if(optionalMention.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        ArrayList<Long> tweetIds = new ArrayList<>();
-        for (Mention mention: mentions) {
-            tweetIds.add(mention.getTweet().getId());
-        }
-        return new ResponseEntity<>(gson.toJson(tweetRepository.findByIdInOrderByDateDesc(tweetIds)), HttpStatus.OK);
+        return new ResponseEntity<>(gson.toJson(tweetRepository.findAllByMentionsOrderByDateDesc(optionalMention.get())), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET)

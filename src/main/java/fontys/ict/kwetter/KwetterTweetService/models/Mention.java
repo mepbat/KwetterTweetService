@@ -1,6 +1,7 @@
 package fontys.ict.kwetter.KwetterTweetService.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Mention")
@@ -9,19 +10,19 @@ public class Mention {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "tweet_id", nullable = false)
-    private Tweet tweet;
+    @ManyToMany
+    @JoinColumn(nullable = false)
+    private List<Tweet> tweets;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String username;
 
     public Mention() {
     }
 
-    public Mention(Long id, Tweet tweet, String username) {
+    public Mention(Long id, List<Tweet> tweets, String username) {
         this.id = id;
-        this.tweet = tweet;
+        this.tweets = tweets;
         this.username = username;
     }
 
@@ -33,12 +34,12 @@ public class Mention {
         this.id = id;
     }
 
-    public Tweet getTweet() {
-        return tweet;
+    public List<Tweet> getTweets() {
+        return tweets;
     }
 
-    public void setTweet(Tweet tweet) {
-        this.tweet = tweet;
+    public void setTweets(List<Tweet> tweets) {
+        this.tweets = tweets;
     }
 
     public String getUsername() {
@@ -53,7 +54,7 @@ public class Mention {
     public String toString() {
         return "Mention{" +
                 "id=" + id +
-                ", tweet=" + tweet.getId() +
+                ", tweet count=" + tweets.size() +
                 ", username='" + username + '\'' +
                 '}';
     }

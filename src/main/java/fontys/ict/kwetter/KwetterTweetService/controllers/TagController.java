@@ -40,6 +40,9 @@ public class TagController {
     @RequestMapping(value = "/trends", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> getTrends(){
         List<String> trends = tagRepository.getTrends();
+        if(trends.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         List<Tag> tags = new ArrayList<>();
         for (String str:trends) {
             Tag tag = new Tag();

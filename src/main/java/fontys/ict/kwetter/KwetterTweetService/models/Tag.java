@@ -1,6 +1,7 @@
 package fontys.ict.kwetter.KwetterTweetService.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Tag")
@@ -8,26 +9,36 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(unique = true)
     private String tag;
 
-    @ManyToOne
-    @JoinColumn(name = "tweet_id", nullable = false)
-    private Tweet tweet;
+    @ManyToMany
+    @JoinColumn(nullable = false)
+    private List<Tweet> tweets;
 
     public Tag() {
+    }
+
+    public Tag(Long id, String tag, List<Tweet> tweets) {
+        this.id = id;
+        this.tag = tag;
+        this.tweets = tweets;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Tweet getTweet() {
-        return tweet;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setTweet(Tweet tweet) {
-        this.tweet = tweet;
+    public List<Tweet> getTweets() {
+        return tweets;
+    }
+
+    public void setTweets(List<Tweet> tweets) {
+        this.tweets = tweets;
     }
 
     public String getTag() {
@@ -43,7 +54,7 @@ public class Tag {
         return "Tag{" +
                 "id=" + id +
                 ", tag='" + tag + '\'' +
-                ", tweet=" + tweet.getId() +
+                ", tweet count=" + tweets.size() +
                 '}';
     }
 }

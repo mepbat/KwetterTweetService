@@ -3,9 +3,9 @@ package fontys.ict.kwetter.KwetterTweetService.repositories;
 import fontys.ict.kwetter.KwetterTweetService.models.Mention;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface MentionRepository extends JpaRepository<Mention,Long> {
-    List<Mention> findByUsername(String username);
+    Optional<Mention> findByUsername(String username);
 
 }

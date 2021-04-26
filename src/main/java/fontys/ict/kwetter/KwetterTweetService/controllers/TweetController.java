@@ -19,10 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,7 +68,7 @@ public class TweetController {
     public ResponseEntity<?> getTweetsByTag(@PathVariable("tag") String tag) {
         Optional<Tag> optionalTag = tagRepository.findByTag(tag);
         if(optionalTag.isEmpty()){
-            return new ResponseEntity<>("No Tweets found", HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(gson.toJson(tweetRepository.findAllByTags(optionalTag.get())), HttpStatus.OK);
     }
@@ -85,7 +82,7 @@ public class TweetController {
     public ResponseEntity<?> getLastTweet(@PathVariable("username") String username) {
         Optional<Tweet> tweet = tweetRepository.findFirstByUsernameOrderByDateDesc(username);
         if (tweet.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(gson.toJson(tweet.get()), HttpStatus.OK);
     }
@@ -97,7 +94,6 @@ public class TweetController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> createTweet(@RequestBody TweetDto tweetDto) {
-        System.out.println(tweetDto.getDate());
         if (tweetDto.getText() == null || tweetDto.getText().isEmpty()) {
             return new ResponseEntity<>("Cannot post an empty tweet.", HttpStatus.BAD_REQUEST);
         }
@@ -118,8 +114,13 @@ public class TweetController {
         Matcher matcherMention = Pattern.compile("(@[^@\\s]*)")
                 .matcher(tweetDto.getText());
         while (matcherMention.find()) {
-            mention.setTweet(tweet);
             mention.setUsername(matcherMention.group().substring(1));
+            Optional<Mention> optionalMention = mentionRepository.findByUsername(mention.getUsername());
+            if(optionalMention.isPresent()){
+                mention = optionalMention.get();
+            } else{
+                mention.setTweets(Collections.singletonList(tweet));
+            }
             List<Mention> mentions = tweet.getMentions();
             mentions.add(mention);
             tweet.setMentions(mentions);
@@ -131,13 +132,21 @@ public class TweetController {
                 .matcher(tweetDto.getText());
         Tag tag = new Tag();
         while (matcherTag.find()) {
-            tag.setTweet(tweet);
             tag.setTag(matcherTag.group().substring(1));
+            Optional<Tag> optionalTag = tagRepository.findByTag(tag.getTag());
+            if(optionalTag.isPresent()){
+                tag = optionalTag.get();
+            } else{
+                tag.setTweets(Collections.singletonList(tweet));
+            }
+            System.out.println(tag.toString());
             List<Tag> tags = tweet.getTags();
             tags.add(tag);
             tweet.setTags(tags);
             if (matcherTag.hitEnd()) break;
         }
+
+        System.out.println(tweet.toString());
 
         Tweet tweetResult = tweetRepository.save(tweet);
         return new ResponseEntity<>(gson.toJson(tweetResult), HttpStatus.CREATED);
@@ -151,7 +160,7 @@ public class TweetController {
     @RequestMapping(method = RequestMethod.DELETE, consumes = "application/json")
     public ResponseEntity<?> deleteTweet(@RequestBody Tweet tweet) {
         tweetRepository.delete(tweet);
-        return new ResponseEntity<>("Tweet deleted", HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private Gson initiateGson() {
@@ -180,6 +189,8 @@ public class TweetController {
 
     private static final List<String> EXCLUDE = new ArrayList<>() {{
         add("tweet");
+        add("tweets");
+
     }};
 
 }

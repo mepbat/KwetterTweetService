@@ -1,5 +1,6 @@
 package fontys.ict.kwetter.KwetterTweetService.repositories;
 
+import fontys.ict.kwetter.KwetterTweetService.models.Mention;
 import fontys.ict.kwetter.KwetterTweetService.models.Tag;
 import fontys.ict.kwetter.KwetterTweetService.models.Tweet;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface TweetRepository extends JpaRepository<Tweet,Long> {
     Optional<Tweet> findFirstByUsernameOrderByDateDesc(String username);
     List<Tweet> findByIdInOrderByDateDesc(Collection<Long> ids);
     List<Tweet> findAllByTags(Tag tag);
+
+    List<Tweet> findAllByMentionsOrderByDateDesc(Mention mention);
 }
