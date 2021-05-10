@@ -54,7 +54,7 @@ public class TagController {
 
     @RequestMapping(value = "/search/{tag}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> searchTags(@PathVariable String tag){
-        return new ResponseEntity<>(gson.toJson(tagRepository.findAllByTagContaining(tag)), HttpStatus.OK);
+        return new ResponseEntity<>(gson.toJson(tagRepository.findTop10ByTagContaining(tag)), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET)

@@ -18,7 +18,7 @@ public interface TagRepository extends JpaRepository<Tag,Long> {
     nativeQuery = true)
     List<String> getTrends();
 
-    List<Tag> findAllByTagContaining(String tag);
+    List<Tag> findTop10ByTagContaining(String tag);
 
     Optional<Tag> findByTag(String tag);
 }

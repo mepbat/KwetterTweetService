@@ -57,10 +57,7 @@ public class TweetController {
 
     @RequestMapping(value = "/getTimeline", method = RequestMethod.POST)
     public ResponseEntity<?> getTimeline(@RequestBody Collection<Long> accountIds) {
-        List<Tweet> tweets = tweetRepository.findTweetsByAccountIdInOrderByDateDesc(accountIds);
-        if (tweets.size() > 10) {
-            tweets = tweets.subList(0, 10);
-        }
+        List<Tweet> tweets = tweetRepository.findTop10ByAccountIdInOrderByDateDesc(accountIds);
         return new ResponseEntity<>(gson.toJson(tweets), HttpStatus.OK);
     }
 
@@ -152,7 +149,7 @@ public class TweetController {
             tweet.setTags(tags);
             if (matcherTag.hitEnd()) break;
         }
-        
+
         Tweet tweetResult = tweetRepository.save(tweet);
         return new ResponseEntity<>(gson.toJson(tweetResult), HttpStatus.CREATED);
     }
