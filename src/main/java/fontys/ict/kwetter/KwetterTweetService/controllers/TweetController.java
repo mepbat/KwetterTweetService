@@ -106,49 +106,8 @@ public class TweetController {
         tweet.setTags(new HashSet<>());
         tweet.setMentions(new HashSet<>());
         tweet = tweetRepository.save(tweet);
-        // Check for mentions
-        Matcher matcherMention = Pattern.compile("(@[^@\\s]*)")
-                .matcher(tweetDto.getText());
-        while (matcherMention.find()) {
-            Mention mention = new Mention();
-            mention.setUsername(matcherMention.group().substring(1));
-            Optional<Mention> optionalMention = mentionRepository.findByUsername(mention.getUsername());
-            if(optionalMention.isPresent()){
-                mention = optionalMention.get();
-            } else{
-                mention.setTweets(Collections.singleton(tweet));
-            }
-            Set<Mention> mentions = tweet.getMentions();
-            Mention finalMention = mention;
-            if(mentions.stream().anyMatch(x -> x.getUsername().equals(finalMention.getUsername()))){
-                continue;
-            }
-            mentions.add(mention);
-            tweet.setMentions(mentions);
-            if (matcherMention.hitEnd()) break;
-        }
-
-        // Check for tags
-        Matcher matcherTag = Pattern.compile("(#[^#\\s]*)")
-                .matcher(tweetDto.getText());
-        while (matcherTag.find()) {
-            Tag tag = new Tag();
-            tag.setTag(matcherTag.group().substring(1));
-            Optional<Tag> optionalTag = tagRepository.findByTag(tag.getTag());
-            if(optionalTag.isPresent()){
-                tag = optionalTag.get();
-            } else{
-                tag.setTweets(Collections.singleton(tweet));
-            }
-            Set<Tag> tags = tweet.getTags();
-            Tag finalTag = tag;
-            if(tags.stream().anyMatch(x -> x.getTag().equals(finalTag.getTag()))){
-                continue;
-            }
-            tags.add(tag);
-            tweet.setTags(tags);
-            if (matcherTag.hitEnd()) break;
-        }
+        extractsMentionsFromTweet(tweet);
+        extractTagsFromTweet(tweet);
 
         Tweet tweetResult = tweetRepository.save(tweet);
         return new ResponseEntity<>(gson.toJson(tweetResult), HttpStatus.CREATED);
@@ -195,4 +154,51 @@ public class TweetController {
 
     }};
 
+
+    private void extractsMentionsFromTweet(Tweet tweet) {
+        Matcher matcherMention = Pattern.compile("(@[^@\\s]*)")
+                .matcher(tweet.getText());
+        while (matcherMention.find()) {
+            Mention mention = new Mention();
+            mention.setUsername(matcherMention.group().substring(1));
+            Optional<Mention> optionalMention = mentionRepository.findByUsername(mention.getUsername());
+            if (optionalMention.isPresent()) {
+                mention = optionalMention.get();
+            } else {
+                mention.setTweets(Collections.singleton(tweet));
+            }
+            Set<Mention> mentions = tweet.getMentions();
+            Mention finalMention = mention;
+            if (mentions.stream().anyMatch(x -> x.getUsername().equals(finalMention.getUsername()))) {
+                continue;
+            }
+            mentions.add(mention);
+            tweet.setMentions(mentions);
+            if (matcherMention.hitEnd()) break;
+        }
+    }
+
+    private void extractTagsFromTweet(Tweet tweet){
+        // Check for tags
+        Matcher matcherTag = Pattern.compile("(#[^#\\s]*)")
+                .matcher(tweet.getText());
+        while (matcherTag.find()) {
+            Tag tag = new Tag();
+            tag.setTag(matcherTag.group().substring(1));
+            Optional<Tag> optionalTag = tagRepository.findByTag(tag.getTag());
+            if(optionalTag.isPresent()){
+                tag = optionalTag.get();
+            } else{
+                tag.setTweets(Collections.singleton(tweet));
+            }
+            Set<Tag> tags = tweet.getTags();
+            Tag finalTag = tag;
+            if(tags.stream().anyMatch(x -> x.getTag().equals(finalTag.getTag()))){
+                continue;
+            }
+            tags.add(tag);
+            tweet.setTags(tags);
+            if (matcherTag.hitEnd()) break;
+        }
+    }
 }

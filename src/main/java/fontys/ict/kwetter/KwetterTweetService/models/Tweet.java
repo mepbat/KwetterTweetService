@@ -1,10 +1,9 @@
 package fontys.ict.kwetter.KwetterTweetService.models;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity(name = "Tweet")
 @Table(name = "Tweet")
