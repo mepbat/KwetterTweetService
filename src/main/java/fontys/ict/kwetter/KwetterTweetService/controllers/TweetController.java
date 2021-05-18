@@ -89,7 +89,7 @@ public class TweetController {
         return new ResponseEntity<>(gson.toJson(tweetRepository.findTop10ByOrderByDateDesc()), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createTweet(@RequestBody TweetDto tweetDto) {
         if (tweetDto.getText() == null || tweetDto.getText().isEmpty()) {
             return new ResponseEntity<>("Cannot post an empty tweet.", HttpStatus.BAD_REQUEST);
@@ -156,6 +156,8 @@ public class TweetController {
 
 
     private void extractsMentionsFromTweet(Tweet tweet) {
+        System.out.print("EXTRACTING MENTIONS: ");
+        System.out.println(tweet);
         Matcher matcherMention = Pattern.compile("(@[^@\\s]*)")
                 .matcher(tweet.getText());
         while (matcherMention.find()) {
