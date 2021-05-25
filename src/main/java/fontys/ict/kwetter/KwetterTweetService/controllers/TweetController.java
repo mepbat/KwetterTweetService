@@ -84,7 +84,7 @@ public class TweetController {
     @PostMapping(value = "/unheart")
     public ResponseEntity<?> unheart(@RequestBody HeartDto heartDto) {
         heartRepository.deleteAllByTweetIdAndUserId(heartDto.getTweetId(), heartDto.getUserId());
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        return new ResponseEntity<>(new Heart(heartDto), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/getMostRecentTweetsByUsername/{username}")
