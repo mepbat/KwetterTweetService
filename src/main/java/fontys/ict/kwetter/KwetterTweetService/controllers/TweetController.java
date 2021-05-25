@@ -4,11 +4,10 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import fontys.ict.kwetter.KwetterTweetService.models.HibernateProxyTypeAdapter;
-import fontys.ict.kwetter.KwetterTweetService.models.Mention;
-import fontys.ict.kwetter.KwetterTweetService.models.Tag;
-import fontys.ict.kwetter.KwetterTweetService.models.Tweet;
+import fontys.ict.kwetter.KwetterTweetService.models.*;
+import fontys.ict.kwetter.KwetterTweetService.models.dto.HeartDto;
 import fontys.ict.kwetter.KwetterTweetService.models.dto.TweetDto;
+import fontys.ict.kwetter.KwetterTweetService.repositories.HeartRepository;
 import fontys.ict.kwetter.KwetterTweetService.repositories.MentionRepository;
 import fontys.ict.kwetter.KwetterTweetService.repositories.TagRepository;
 import fontys.ict.kwetter.KwetterTweetService.repositories.TweetRepository;
@@ -18,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -29,8 +29,8 @@ public class TweetController {
     private final TweetRepository tweetRepository;
     private final MentionRepository mentionRepository;
     private final TagRepository tagRepository;
+    private final HeartRepository heartRepository;
     private final Gson gson;
-
     private final AmqpTemplate rabbitTemplate;
 
     @Value("${rabbitmq.exchange}")
@@ -38,10 +38,11 @@ public class TweetController {
     @Value("${rabbitmq.routingKey}")
     private String routingkey;
 
-    public TweetController(TweetRepository tweetRepository, MentionRepository mentionRepository, TagRepository tagRepository, AmqpTemplate rabbitTemplate) {
+    public TweetController(TweetRepository tweetRepository, MentionRepository mentionRepository, TagRepository tagRepository, HeartRepository heartRepository, AmqpTemplate rabbitTemplate) {
         this.tweetRepository = tweetRepository;
         this.mentionRepository = mentionRepository;
         this.tagRepository = tagRepository;
+        this.heartRepository = heartRepository;
         this.rabbitTemplate = rabbitTemplate;
         this.gson = initiateGson();
     }
@@ -68,6 +69,22 @@ public class TweetController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(gson.toJson(tweetRepository.findAllByTags(optionalTag.get())), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/hasHearted/{tweetId}/{userId}")
+    public ResponseEntity<?> hasHearted(@PathVariable long tweetId, @PathVariable long userId) {
+        return new ResponseEntity<>(heartRepository.existsByTweetIdAndUserId(tweetId,userId), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/heart")
+    public ResponseEntity<?> heart(@RequestBody HeartDto heartDto) {
+        return new ResponseEntity<>(heartRepository.save(new Heart(heartDto)), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/unheart")
+    public ResponseEntity<?> unheart(@RequestBody HeartDto heartDto) {
+        heartRepository.deleteAllByTweetIdAndUserId(heartDto.getTweetId(), heartDto.getUserId());
+        return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/getMostRecentTweetsByUsername/{username}")

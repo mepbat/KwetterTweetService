@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import fontys.ict.kwetter.KwetterTweetService.controllers.TweetController;
 import fontys.ict.kwetter.KwetterTweetService.models.Tweet;
 import fontys.ict.kwetter.KwetterTweetService.models.dto.TweetDto;
+import fontys.ict.kwetter.KwetterTweetService.repositories.HeartRepository;
 import fontys.ict.kwetter.KwetterTweetService.repositories.MentionRepository;
 import fontys.ict.kwetter.KwetterTweetService.repositories.TagRepository;
 import fontys.ict.kwetter.KwetterTweetService.repositories.TweetRepository;
@@ -42,6 +43,8 @@ public class TweetIntegrationTests {
     @MockBean
     private MentionRepository mentionRepository;
     @MockBean
+    private HeartRepository heartRepository;
+    @MockBean
     private AmqpTemplate rabbitTemplate;
 
     private final Gson gson = new Gson();
@@ -56,6 +59,7 @@ public class TweetIntegrationTests {
         assertThat(tweetRepository).isNotNull();
         assertThat(tagRepository).isNotNull();
         assertThat(mentionRepository).isNotNull();
+        assertThat(heartRepository).isNotNull();
     }
 
     @Test
